@@ -9,7 +9,9 @@ public class Creature
 	int funMeter ;
 	
 	int urine ;
-	int feces ; 
+	int feces ;
+	
+	boolean lives = true ;
 	
 	public Creature( String name )
 	{
@@ -29,10 +31,8 @@ public class Creature
 	}
 	
 	public boolean isAlive()
-	{
-		if( hydrationMeter <= 0 || satiationMeter <= 0 ) return false ;
-
-		return true ;
+	{	
+		return lives ;
 	}
 
 	public int countFeces()
@@ -67,13 +67,65 @@ public class Creature
 	
 	public String giveStatus()
 	{
+		int overdose = 150 ;
+		
 		String firstOutput = "", secondOutput = "";
 		
 		int firstMinimum, secondMinimum ;
 		
-		int okayCounter = 0 ; 
+		int okayCounter = 0 ;
 		
-		if(hydrationMeter < satiationMeter)
+		int distA=50, distB=50 ;
+		
+		boolean foodMuch  = false,
+				foodFew   = false,
+				drinkMuch = false,
+				drinkFew  = false ;
+		
+		if( satiationMeter > 100 )
+		{
+			if( overdose - satiationMeter < hydrationMeter )
+			{
+				foodMuch = true ;
+				distA = overdose - satiationMeter ;
+			}
+			else
+			{
+				drinkFew = true ;
+				distA = hydrationMeter ;
+			}
+		}
+		
+		if( hydrationMeter > 100 )
+		{
+			if( overdose - hydrationMeter < satiationMeter )
+			{
+				drinkMuch = true ;
+				distB = overdose - hydrationMeter ;
+			}
+			else
+			{
+				foodFew = true ;
+				distB = satiationMeter ;
+			}
+		}
+		
+		String biggestNeed = "" ;
+		
+		if( distA < distB )
+		{
+			if(foodMuch) biggestNeed = "overeating" ;
+			
+			else if(drinkFew) biggestNeed = "underdrinking";
+		}
+		else
+		{
+			if(drinkMuch) biggestNeed = "overdrinking";
+			
+			else if(foodFew) biggestNeed = "undereating" ;
+		}
+		
+		if( biggestNeed == "overdrinking" || biggestNeed == "underdrinking" ) // overeating death remains undetected; improve prerequisite overlaps
 		{
 			firstMinimum = hydrationMeter ;
 			
@@ -81,23 +133,43 @@ public class Creature
 			else if( hydrationMeter <=20 ) firstOutput = this.name+ " is very thirsty";
 			else if( hydrationMeter <=50 ) firstOutput = this.name+ " is thirsty";
 			else if( hydrationMeter <=80 ) firstOutput = this.name+ " is slightly thirsty";
+			else if( hydrationMeter >=overdose )
+			{
+				lives = false ;
+				return this.name+ " died from overhydration.";
+			}
+			else if( hydrationMeter >=overdose-40 ) firstOutput = this.name+ " drank too much.";
 			else okayCounter++ ;
 		}
 		else
 		{
 			firstMinimum = satiationMeter ;
 			
-			if( satiationMeter <= 0 ) return this.name + " died of hunger." ;
+			if( satiationMeter <= 0 )
+			{
+				lives = false ;
+				return this.name + " died of hunger." ;
+			}
 			else if( satiationMeter <=10 ) firstOutput = this.name+ " is very hungry";
 			else if( satiationMeter <=60 ) firstOutput = this.name+ " is hungry";
 			else if( satiationMeter <=85 ) firstOutput = this.name+ " is slightly hungry";
+			else if( satiationMeter >=overdose )
+			{
+				lives = false ;
+				return this.name+ " died from overfeeding.";
+			}
+			else if( satiationMeter >=overdose-40 ) firstOutput = this.name+ " ate too much.";
 			else okayCounter++ ;
 		}
 		
 		
 		if(urine>feces)
 		{
-		     if( urine >= 100 ) return this.name + "'s bladder exploded." ;
+		     if( urine >= 100 )
+		     {
+		    	 lives = false ;
+		    	 return this.name + "'s bladder exploded." ;
+		     }
 				else if( urine >= 90  ) secondOutput = "needs to pee REALLY bad!";
 				else if( urine >= 40  ) secondOutput = "needs to pee.";
 				else if( urine >= 20  ) secondOutput = "needs to pee a little bit.";
@@ -105,7 +177,11 @@ public class Creature
 		}
 		else
 		{
-			if( feces >= 100 ) return this.name + "'s butt exploded." ;
+			if( feces >= 100 )
+			{
+				lives = false ;
+				return this.name + "'s butt exploded." ;
+			}
 			else if( feces >= 85  ) secondOutput = "needs to poo REALLY bad!";
 			else if( feces >= 45  ) secondOutput = "needs to poo.";
 			else if( feces >= 25  ) secondOutput = "needs to poo a little bit.";
@@ -142,15 +218,23 @@ public class Creature
 	
 	public void dayPasses()
 	{
-		this.hydrationMeter -= 15 ;
-		this.satiationMeter -= 5 ;
-		this.funMeter -= 20 ;
-		
+		if( lives )
+		{
+			this.hydrationMeter -= 15 ;
+			this.satiationMeter -= 5 ;
+			this.funMeter -= 20 ;
+		}
 		updateHappiness();
 	}
 	
 	public void updateHappiness()
 	{
+		if(!lives)
+		{
+			happinessMeter = 0 ;
+			return ;
+		}
+		
 		int m = Math.min(hydrationMeter,satiationMeter) ;
 		int e = Math.min(100-urine,100-feces) ;
 		
@@ -166,17 +250,17 @@ public class Creature
 	
 	public void getFed( int foodQuantity )
 	{
-		this.satiationMeter = Math.min(100,this.satiationMeter+foodQuantity) ;
+		this.satiationMeter = Math.min(150,this.satiationMeter+foodQuantity) ;
 		
-		if(this.satiationMeter>50) this.feces = Math.min(100,this.feces+foodQuantity/2) ;
+		if(this.satiationMeter>50) this.feces = Math.min(150,this.feces+foodQuantity/2) ;
 		
 		updateHappiness();
 	}
 	
 	public void getWatered( int drinkQuantity )
 	{
-		this.hydrationMeter = Math.min(100,this.hydrationMeter+drinkQuantity) ;
-		if(hydrationMeter>50) this.urine = Math.min(100,this.urine+drinkQuantity/2) ;
+		this.hydrationMeter = Math.min(150,this.hydrationMeter+drinkQuantity) ;
+		if(hydrationMeter>50) this.urine = Math.min(150,this.urine+drinkQuantity/2) ;
 		
 		updateHappiness();
 	}

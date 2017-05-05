@@ -73,34 +73,40 @@ public class Window extends Applet implements ActionListener, ItemListener
 	
 	
 	public void actionPerformed(ActionEvent evt)
-	{		
+	{
+		String name = pet.returnName();
+		
 		if (evt.getSource() == nextDay)
 		{			
 			currentDay++ ;
 			pet.dayPasses();
 			
-			String name = pet.returnName();
+			
 			lastActionMessage = name+" woke up the next day." ;
+		}
+		
+		if(!pet.isAlive())
+		{
+			lastActionMessage = "Attempted action failed, because " + name + " is dead.";
+			repaint();
+			return ;
 		}
 		
 		if (evt.getSource() == feed)
 		{			
 			pet.getFed(10) ;
-			String name = pet.returnName();
 			lastActionMessage = name+" ate some food." ;
 		}
 		
 		if (evt.getSource() == water)
 		{			
 			pet.getWatered(15) ;
-			String name = pet.returnName();
 			lastActionMessage = name+" drank some water." ;
 		}
 		
 		if (evt.getSource() == takeOnWalk)
 		{			
 			pet.purgeGuts() ;
-			String name = pet.returnName();
 			
 			lastActionMessage = name+" did its business." ;
 		}
@@ -108,7 +114,6 @@ public class Window extends Applet implements ActionListener, ItemListener
 		if (evt.getSource() == play)
 		{			
 			pet.play(25) ;
-			String name = pet.returnName();
 			
 			lastActionMessage = name+" played a game." ;
 		}
