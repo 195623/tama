@@ -60,35 +60,75 @@ public class Creature
 	
 	public String giveStatus()
 	{
-		String output = "";
+		String firstOutput = "", secondOutput = "";
 		
-		int okayCounter = 0 ;
+		int firstMinimum, secondMinimum ;
 		
-		if( hydrationMeter <= 0 ) return this.name + " died of thirst." ;
-		else if( hydrationMeter <=20 ) output = this.name+ " is very thirsty.";
-		else if( hydrationMeter <=50 ) output = this.name+ " is thirsty.";
-		else if( hydrationMeter <=80 ) output = this.name+ " is slightly thirsty.";
-		else okayCounter++ ;
+		int okayCounter = 0 ; 
 		
-		if( satiationMeter <= 0 ) return this.name + " died of hunger." ;
-		else if( satiationMeter <=10 ) output = this.name+ " is very hungry.";
-		else if( satiationMeter <=60 ) output = this.name+ " is hungry.";
-		else if( satiationMeter <=85 ) output = this.name+ " is slightly hungry.";
-		else okayCounter++ ;
+		if(hydrationMeter < satiationMeter)
+		{
+			firstMinimum = hydrationMeter ;
+			
+			if( hydrationMeter <= 0 ) return this.name + " died of thirst." ;
+			else if( hydrationMeter <=20 ) firstOutput = this.name+ " is very thirsty";
+			else if( hydrationMeter <=50 ) firstOutput = this.name+ " is thirsty";
+			else if( hydrationMeter <=80 ) firstOutput = this.name+ " is slightly thirsty";
+			else okayCounter++ ;
+		}
+		else
+		{
+			firstMinimum = satiationMeter ;
+			
+			if( satiationMeter <= 0 ) return this.name + " died of hunger." ;
+			else if( satiationMeter <=10 ) firstOutput = this.name+ " is very hungry";
+			else if( satiationMeter <=60 ) firstOutput = this.name+ " is hungry";
+			else if( satiationMeter <=85 ) firstOutput = this.name+ " is slightly hungry";
+			else okayCounter++ ;
+		}
 		
+		
+		if(urine>feces)
+		{
 		     if( urine >= 100 ) return this.name + "'s bladder exploded." ;
-		else if( urine >= 90  ) output = this.name+ " needs to pee REALLY bad!";
-		else if( urine >= 40  ) output = this.name+ " needs to pee.";
-		else if( urine >= 20  ) output = this.name+ " needs to pee a little bit.";
-		else okayCounter++ ;
+				else if( urine >= 90  ) secondOutput = "needs to pee REALLY bad!";
+				else if( urine >= 40  ) secondOutput = "needs to pee.";
+				else if( urine >= 20  ) secondOutput = "needs to pee a little bit.";
+				else okayCounter++ ;
+		}
+		else
+		{
+			if( feces >= 100 ) return this.name + "'s butt exploded." ;
+			else if( feces >= 85  ) secondOutput = "needs to poo REALLY bad!";
+			else if( feces >= 45  ) secondOutput = "needs to poo.";
+			else if( feces >= 25  ) secondOutput = "needs to poo a little bit.";
+			else okayCounter++ ;
+		}
+		
+		String output = "" ;
 		     
-		     if( feces >= 100 ) return this.name + "'s butt exploded." ;
-		else if( feces >= 85  ) output = this.name+ " needs to poo REALLY bad!";
-		else if( feces >= 45  ) output = this.name+ " needs to poo.";
-		else if( feces >= 25  ) output = this.name+ " needs to poo a little bit.";
-		else okayCounter++ ;
-		     
-		if( okayCounter == 4 ) output = "All is okay with " + this.name + "." ;
+		if( okayCounter == 2 ) output = "All is okay with " + this.name + "." ;
+		
+		if( firstOutput == "" )
+		{
+			if( secondOutput == "" )
+			{
+				output = "All is okay with " + this.name + "." ;
+			}
+			else output = this.name+' '+secondOutput ;
+		}
+		else
+		{
+			if( secondOutput == "" )
+			{
+				output = firstOutput +'.';
+			}
+			else
+			{
+				output = firstOutput + " and " + secondOutput ;
+			}
+		}
+		
 		
 		return output ;
 	}
