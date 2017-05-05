@@ -11,13 +11,14 @@ public class Window extends Applet implements ActionListener, ItemListener
 	Button  nextDay,
 			feed,
 			water,
-			takeOnWalk;
+			takeOnWalk,
+			play;
 	
 	boolean defaultColor = true ;
 			
 	Color currentColor = Color.BLACK ;
 	
-	TextField oknoTekstowe; 
+	TextField textField; 
 	Choice choice1 ;
 	
 	// ----
@@ -52,14 +53,16 @@ public class Window extends Applet implements ActionListener, ItemListener
 		int satiation = pet.countSatiation() ;
 		int hydration = pet.countHydration() ;
 		int happiness = pet.countHappiness() ;
+		int fun       = pet.countFun();
 		int feces = pet.countFeces() ;
 		int urine = pet.countUrine() ;
 		String txt = "" ;
+		txt += "HAPPINESS: " + happiness + " :: " ;
 		txt += "Satiation: " + satiation + ", " ;
 		txt += "Hydration: " + hydration + ", " ;
-		txt += "Happiness: " + happiness + ", " ;
-		txt += "    feces: " + feces + ", " ;
-		txt += "    urine: " + urine + "." ;
+		txt += "Fun: " + fun + ", " ;
+		txt += "feces: " + feces + ", " ;
+		txt += "urine: " + urine + "." ;
 		
 		
 		g.drawString(txt, 200, 190);
@@ -102,6 +105,14 @@ public class Window extends Applet implements ActionListener, ItemListener
 			lastActionMessage = name+" did its business." ;
 		}
 		
+		if (evt.getSource() == play)
+		{			
+			pet.play(25) ;
+			String name = pet.returnName();
+			
+			lastActionMessage = name+" played a game." ;
+		}
+		
 		
 		
 			
@@ -126,10 +137,14 @@ public class Window extends Applet implements ActionListener, ItemListener
 		add(takeOnWalk);
 		takeOnWalk.addActionListener(this);
 		
+		play = new Button("Play");
+		add(play);
+		play.addActionListener(this);
+		
 		// --------
 		
-		oknoTekstowe = new TextField(20);
-        add(oknoTekstowe);
+		textField = new TextField(20);
+        add(textField);
         choice1 = new Choice();
         choice1.add("A");
         choice1.add("B");
@@ -137,7 +152,7 @@ public class Window extends Applet implements ActionListener, ItemListener
         add(choice1); 
         choice1.addItemListener(this);
         
-        oknoTekstowe.setText( "---" );
+        textField.setText( "---" );
 		
 		
 
@@ -150,7 +165,7 @@ public class Window extends Applet implements ActionListener, ItemListener
             if(e.getItemSelectable() == choice1)
             {
             	text = ( (Choice) e.getItemSelectable() ).getSelectedItem() ;            	
-            	oknoTekstowe.setText( text );
+            	textField.setText( text );
             }
     }    
 

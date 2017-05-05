@@ -6,6 +6,7 @@ public class Creature
 	int hydrationMeter ;
 	int satiationMeter ;
 	int happinessMeter ;
+	int funMeter ;
 	
 	int urine ;
 	int feces ; 
@@ -16,6 +17,7 @@ public class Creature
 		this.hydrationMeter = 100 ;
 		this.satiationMeter = 100 ;
 		this.happinessMeter = 100 ;
+		this.funMeter = 100 ;
 		
 		this.urine = 0 ;
 		this.feces   = 0  ;		
@@ -56,6 +58,11 @@ public class Creature
 	public int countHappiness()
 	{
 		return this.happinessMeter;
+	}
+	
+	public int countFun()
+	{
+		return funMeter ;
 	}
 	
 	public String giveStatus()
@@ -137,6 +144,7 @@ public class Creature
 	{
 		this.hydrationMeter -= 15 ;
 		this.satiationMeter -= 5 ;
+		this.funMeter -= 20 ;
 		
 		updateHappiness();
 	}
@@ -146,7 +154,14 @@ public class Creature
 		int m = Math.min(hydrationMeter,satiationMeter) ;
 		int e = Math.min(100-urine,100-feces) ;
 		
-		happinessMeter = Math.min(m,e) ;		
+		happinessMeter = Math.min(m,e) ;
+		
+		happinessMeter = Math.min(happinessMeter,funMeter);
+	}
+	
+	public void play( int funQuantity )
+	{
+		this.funMeter = Math.min(100,funMeter+funQuantity);
 	}
 	
 	public void getFed( int foodQuantity )
