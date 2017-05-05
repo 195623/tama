@@ -21,6 +21,11 @@ public class Creature
 		this.feces   = 0  ;		
 	}
 	
+	public String returnName()
+	{
+		return this.name ;
+	}
+	
 	public boolean isAlive()
 	{
 		if( hydrationMeter <= 0 || satiationMeter <= 0 ) return false ;
@@ -36,6 +41,21 @@ public class Creature
 	public int countUrine()
 	{
 		return this.urine;
+	}
+	
+	public int countSatiation()
+	{
+		return this.satiationMeter;
+	}
+	
+	public int countHydration()
+	{
+		return this.hydrationMeter;
+	}
+	
+	public int countHappiness()
+	{
+		return this.happinessMeter;
 	}
 	
 	public String giveStatus()
@@ -77,24 +97,41 @@ public class Creature
 	{
 		this.hydrationMeter -= 15 ;
 		this.satiationMeter -= 5 ;
+		
+		updateHappiness();
+	}
+	
+	public void updateHappiness()
+	{
+		int m = Math.min(hydrationMeter,satiationMeter) ;
+		int e = Math.min(100-urine,100-feces) ;
+		
+		happinessMeter = Math.min(m,e) ;		
 	}
 	
 	public void getFed( int foodQuantity )
 	{
 		this.satiationMeter = Math.min(100,this.satiationMeter+foodQuantity) ;
-		this.feces = Math.min(100,this.feces+foodQuantity/2) ;
+		
+		if(this.satiationMeter>50) this.feces = Math.min(100,this.feces+foodQuantity/2) ;
+		
+		updateHappiness();
 	}
 	
 	public void getWatered( int drinkQuantity )
 	{
 		this.hydrationMeter = Math.min(100,this.hydrationMeter+drinkQuantity) ;
-		this.urine = Math.min(100,this.urine+drinkQuantity/2) ;
+		if(hydrationMeter>50) this.urine = Math.min(100,this.urine+drinkQuantity/2) ;
+		
+		updateHappiness();
 	}
 	
 	public void purgeGuts()
 	{
 		this.urine = 0 ;
 		this.feces = 0 ;
+		
+		updateHappiness();
 	}
 
 }
