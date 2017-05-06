@@ -8,6 +8,8 @@ public class Creature
 	int happinessMeter ;
 	int funMeter ;
 	
+	int overdose = 150 ;
+	
 	int urine ;
 	int feces ;
 	
@@ -67,9 +69,115 @@ public class Creature
 	
 	public String giveStatus()
 	{
-		int overdose = 150 ;
-		
 		String firstOutput = "", secondOutput = "";
+		String output = "" ;
+		
+		// 1foodOver, 2foodUnder, 3drinkOver, 4drinkUnder
+		
+		int distMuchFood = overdose - satiationMeter ;
+		int distMuchDrink = overdose - hydrationMeter ;
+		int mini = 100, i = 0 ;
+		
+		if( distMuchFood < mini )
+		{
+			mini = distMuchFood ;
+			i = 1 ;
+		}
+		
+		if( satiationMeter < mini )
+		{
+			mini = satiationMeter ;
+			i = 2 ;
+		}
+		
+		if( distMuchDrink < mini )
+		{
+			mini = distMuchDrink ;
+			i = 3 ;
+		}
+		
+		if( hydrationMeter < mini )
+		{
+			mini = hydrationMeter ;
+			i = 4 ;
+		}
+		
+		// --
+		
+		if( i == 1 ) // too much food
+		{
+			if(satiationMeter>=overdose)
+			{
+				lives = false ;
+				happinessMeter = 0 ;
+				funMeter = 0 ;
+				return name +" died of overeating." ;
+			}
+			else if(satiationMeter>=(100+overdose)/2) firstOutput = name+" is WAY too full" ;
+			else if(satiationMeter>100) firstOutput = name+" ate a bit too much" ;
+		}
+		else		
+		if( i == 2 ) // too little food
+		{
+			if(satiationMeter<=0)
+			{
+				lives = false ;
+				happinessMeter = 0 ;
+				funMeter = 0 ;
+				return name +" died of starvation." ;
+			}
+			else if(satiationMeter<10) firstOutput = name+" is starving" ;
+			else if(satiationMeter<30) firstOutput = name+" is very hungry" ;
+			else if(satiationMeter<60) firstOutput = name+" is hungry" ;
+			else if(satiationMeter<90) firstOutput = name+" a little hungry" ;	
+		}
+		else
+		if( i == 3 ) // too much drink
+		{
+			if(hydrationMeter>=overdose)
+			{
+				lives = false ;
+				happinessMeter = 0 ;
+				funMeter = 0 ;
+				return name +" died of overdrinking." ;
+			}
+			else if(hydrationMeter>=(100+overdose)/2) firstOutput = name+" drank WAY too much" ;
+			else if(hydrationMeter>100) firstOutput = name+" drank a bit too much" ;
+		}
+		else
+		if( i == 4 ) // too little drink
+		{
+			if(hydrationMeter<=0)
+			{
+				lives = false ;
+				happinessMeter = 0 ;
+				funMeter = 0 ;
+				return name +" died of dehydration." ;
+			}
+			else if(hydrationMeter<10) firstOutput = name+" is awfully parched" ;
+			else if(hydrationMeter<30) firstOutput = name+" is very thirsty" ;
+			else if(hydrationMeter<60) firstOutput = name+" is thirsty" ;
+			else if(hydrationMeter<90) firstOutput = name+" a little thirsty" ;			
+		}
+		
+		// empty part-output --> don't display it
+		
+		if(firstOutput=="" && secondOutput=="") 
+		{
+			if( funMeter >= 95 ) output = name+" is perfectly okay.";
+			else if( funMeter>80) output = name+" is a little bored.";
+			else if( funMeter>50) output = name+" is a bored.";
+			else if( funMeter>20) output = name+" is a very bored.";
+			else output = name+" is a awfully bored.";			
+		}
+		else if(firstOutput!="" && secondOutput == "") output = firstOutput+'.';
+		else if(firstOutput=="" && secondOutput != "") output = secondOutput ;
+		else output = firstOutput + " and " + secondOutput ;
+		
+		
+		
+		/*organize prerequisites
+		
 		
 		int firstMinimum, secondMinimum ;
 		
@@ -188,9 +296,16 @@ public class Creature
 			else okayCounter++ ;
 		}
 		
-		String output = "" ;
+		
 		     
-		if( okayCounter == 2 ) output = "All is okay with " + this.name + "." ;
+		if( okayCounter == 2 )
+		{
+			if( funMeter < 10 ) output = this.name + " is awfully bored." ;
+			else if( funMeter < 30 ) output = this.name + " is very bored." ;
+			else if( funMeter < 60 ) output = this.name + " is quite bored." ;
+			else if( funMeter < 80 ) output = this.name + " is a little bored." ;
+			else output = "All is okay with " + this.name + "." ;
+		}
 		
 		if( firstOutput == "" )
 		{
@@ -210,7 +325,7 @@ public class Creature
 			{
 				output = firstOutput + " and " + secondOutput ;
 			}
-		}
+		}*/
 		
 		
 		return output ;
@@ -250,17 +365,17 @@ public class Creature
 	
 	public void getFed( int foodQuantity )
 	{
-		this.satiationMeter = Math.min(150,this.satiationMeter+foodQuantity) ;
+		this.satiationMeter = Math.min(overdose,this.satiationMeter+foodQuantity) ;
 		
-		if(this.satiationMeter>50) this.feces = Math.min(150,this.feces+foodQuantity/2) ;
+		if(this.satiationMeter>50) this.feces = Math.min(overdose,this.feces+foodQuantity/2) ;
 		
 		updateHappiness();
 	}
 	
 	public void getWatered( int drinkQuantity )
 	{
-		this.hydrationMeter = Math.min(150,this.hydrationMeter+drinkQuantity) ;
-		if(hydrationMeter>50) this.urine = Math.min(150,this.urine+drinkQuantity/2) ;
+		this.hydrationMeter = Math.min(overdose,this.hydrationMeter+drinkQuantity) ;
+		if(hydrationMeter>50) this.urine = Math.min(overdose,this.urine+drinkQuantity/2) ;
 		
 		updateHappiness();
 	}
