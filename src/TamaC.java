@@ -80,7 +80,19 @@ public class TamaC
             if( e.getSource() == m_view.returnFeedButton() )
             {
             	System.out.println("Pet got fed.");
+            }
+            else if( e.getSource() == m_view.returnWaterButton() )
+            {
+            	System.out.println("Pet got watered.");
+            }
+            else if( e.getSource() == m_view.returnWalkButton() )
+            {
+            	System.out.println("Pet got walked.");
             }            
+            else if( e.getSource() == m_view.returnPlayButton() )
+            {
+            	System.out.println("Pet got played with.");
+            }
         }    
     }
 }

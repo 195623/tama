@@ -33,6 +33,21 @@ class TamaV extends JFrame
     	return feedButton ;
     }
     
+    public JButton returnWaterButton()
+    {
+    	return waterButton ;
+    }
+    
+    public JButton returnWalkButton()
+    {
+    	return walkButton ;
+    }
+    
+    public JButton returnPlayButton()
+    {
+    	return playButton ;
+    }
+    
     
     
     //======================================================= constructor
@@ -63,8 +78,19 @@ class TamaV extends JFrame
         
         // ------------------------------------
         
-        content.add(new JLabel("Feed"));
+        content.add(new JLabel());
         content.add(feedButton);
+        
+        content.add(new JLabel());
+        content.add(waterButton);
+        
+        content.add(new JLabel());
+        content.add(walkButton);
+        
+        content.add(new JLabel());
+        content.add(playButton);
+        
+        // ------------------------------------
         
         //... finalize layout
         this.setContentPane(content);
@@ -107,6 +133,9 @@ class TamaV extends JFrame
     void addPetListener(ActionListener fal)
     {
         feedButton.addActionListener(fal);
+        waterButton.addActionListener(fal);
+        walkButton.addActionListener(fal);
+        playButton.addActionListener(fal);
     }
     
     
