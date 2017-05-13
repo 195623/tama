@@ -72,7 +72,7 @@ public class Creature
 		return funMeter ;
 	}
 	
-	public String giveNeeds()
+	public String returnNeeds()
 	{
 		String txt = "" ;
 		txt += "HAPPINESS: " + happinessMeter + " :: " ;
@@ -85,7 +85,7 @@ public class Creature
 		return txt ;
 	}
 	
-	public String giveStatus()
+	public String returnStatus()
 	{
 		String firstOutput = "", secondOutput = "";
 		String output = "" ;

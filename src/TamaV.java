@@ -8,6 +8,9 @@ import java.awt.event.*;
 
 class TamaV extends JFrame
 {
+	JFrame mainJFrame = new JFrame();
+	JFrame subJFrame = new JFrame() ;
+	
     //... Constants
     private static final String INITIAL_VALUE = "1";
     
@@ -27,6 +30,8 @@ class TamaV extends JFrame
     private JButton    waterButton    = new JButton("Water");
     private JButton    walkButton    = new JButton("Walk");
     private JButton    playButton    = new JButton("Play");
+    
+    //TextField textField = new TextField("default");
     
     public JButton returnFeedButton()
     {
@@ -51,83 +56,118 @@ class TamaV extends JFrame
     
     
     //======================================================= constructor
+    
+    JPanel content = new JPanel();
+    JPanel content2 = new JPanel();
+    
     /** Constructor */
     TamaV(TamaM model)
     {	
-    	ext_pet = model.returnPet();
-    	
-    	// ------------------------------------
-    	
-    	//... Set up the logic
-        m_model = model;
-        m_model.setValue(INITIAL_VALUE);
+    	ext_pet = model.returnPet();    	
+        m_model = model;        
+
         
-        //... Initialize components
-        m_totalTf.setText(m_model.getValue());
-        m_totalTf.setEditable(false);
+        //showWindow(); < --------------------<---------------------<-------- UNCOMMENT THIS and COMMENT NEXT
+        showEx();
         
-        //... Layout the components.      
-        JPanel content = new JPanel();
-        content.setLayout(new FlowLayout());
-        content.add(new JLabel("Input"));
-        content.add(m_userInputTf);
-        content.add(m_multiplyBtn);
-        content.add(new JLabel("Total"));
-        content.add(m_totalTf);
-        content.add(m_clearBtn);
+    }
+    
+    
+    void showWindow()
+    {
+    	this.setLayout(new FlowLayout());
+    	
         
         // ------------------------------------
         
-        content.add(new JLabel());
-        content.add(feedButton);
+    	this.add(feedButton);
+    	this.add(waterButton);
+    	this.add(walkButton);
+    	this.add(playButton);
         
-        content.add(new JLabel());
-        content.add(waterButton);
-        
-        content.add(new JLabel());
-        content.add(walkButton);
-        
-        content.add(new JLabel());
-        content.add(playButton);
-        
-        // ------------------------------------
-        
-        //... finalize layout
-        this.setContentPane(content);
-        this.pack();
-        
-        this.setTitle("Tamagotchi_MVC");
+    	this.add(new JLabel(m_model.returnPet().returnNeeds()));
+    	this.pack();
+    	this.setVisible(true);
+    	
+    	this.setTitle("Tamagotchi_MVC");
         // The window closing event should probably be passed to the 
         // Controller in a real program, but this is a short example.
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    	    	
     }
     
-    void reset() {
-        m_totalTf.setText(INITIAL_VALUE);
+    
+    void showSubWindow()
+    {
+    	this.getContentPane().removeAll();
+    	this.add(new JLabel("This is a subwindow."));
+    	this.setTitle("Tamagotchi_MVC");
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
     
-    String getUserInput() {
-        return m_userInputTf.getText();
+    void showEx()
+    {
+    	final JRadioButton game = new JRadioButton("Game", true);
+        JRadioButton highScores = new JRadioButton("High Scores");
+
+        ButtonGroup buttonGroup = new ButtonGroup();
+        buttonGroup.add( game );
+        buttonGroup.add( highScores );
+
+        JPanel buttons = new JPanel(new GridLayout(1, 1));
+        buttons.add( game );
+        buttons.add( highScores );
+
+        JPanel gui = new JPanel(new BorderLayout(5,5));
+        gui.add(buttons, BorderLayout.SOUTH);
+
+        final CardLayout cardLayout = new CardLayout();
+        final JPanel cards = new JPanel(cardLayout);
+        gui.add(cards);
+        cards.add(new JLabel("Level 1"), "game");
+        
+        JPanel jpan = new JPanel(new GridLayout(5, 1));
+        jpan.add(new JLabel("High Scores"));
+        jpan.add(new JLabel("1. JKB"));
+        jpan.add(new JLabel("2. ASS"));
+        jpan.add(new JLabel("3. POO"));
+        cards.add(jpan, "scores");
+
+        ActionListener al = new ActionListener()
+        {
+            public void actionPerformed(ActionEvent ae)
+            {
+                if (game.isSelected())
+                {
+                	cardLayout.show(cards, "game");
+                }
+                else
+                {
+                	cardLayout.show(cards, "scores");
+                }
+            }
+        };
+        game.addActionListener(al);
+        highScores.addActionListener(al);
+
+        JOptionPane.showMessageDialog(null, gui);
     }
     
-    void setTotal(String newTotal) {
-        m_totalTf.setText(newTotal);
-    }
-    
-    void showError(String errMessage) {
-        JOptionPane.showMessageDialog(this, errMessage);
-    }
-    
-    void addMultiplyListener(ActionListener mal) {
-        m_multiplyBtn.addActionListener(mal);
-    }
-    
-    void addClearListener(ActionListener cal) {
-        m_clearBtn.addActionListener(cal);
-    }
     
 
     
+   
+    void showError(String errMessage)
+    {
+        JOptionPane.showMessageDialog(this, errMessage);
+    }
+    
+    
+    void addMultiplyListener(ActionListener mal)
+    {
+        m_multiplyBtn.addActionListener(mal);
+    }
+        
     // ------------
     
     void addPetListener(ActionListener fal)
@@ -136,10 +176,6 @@ class TamaV extends JFrame
         waterButton.addActionListener(fal);
         walkButton.addActionListener(fal);
         playButton.addActionListener(fal);
-    }
-    
-    
-   
-    
+    } 
     
 }

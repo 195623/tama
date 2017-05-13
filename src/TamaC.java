@@ -20,7 +20,7 @@ public class TamaC
         
         //... Add listeners to the view.
         view.addMultiplyListener(new MultiplyListener());
-        view.addClearListener(new ClearListener());
+        //view.addClearListener(new ClearListener());
         view.addPetListener( new PetListener() );
 
       
@@ -45,9 +45,9 @@ public class TamaC
             String userInput = "";
             try
             {
-                userInput = m_view.getUserInput();
-                m_model.multiplyBy(userInput);
-                m_view.setTotal(m_model.getValue());
+                //userInput = m_view.getUserInput();
+                //m_model.multiplyBy(userInput);
+                //m_view.setTotal(m_model.getValue());
                 
             }
             catch (NumberFormatException nfex)
@@ -56,21 +56,6 @@ public class TamaC
             }
         }
     }//end inner class MultiplyListener
-    
-    
-    //////////////////////////////////////////// inner class ClearListener
-    /**  1. Reset model.
-     *   2. Reset View.
-     */    
-    class ClearListener implements ActionListener
-    {
-        public void actionPerformed(ActionEvent e) {
-            m_model.reset();
-            m_view.reset();
-        }
-        
-        
-    }// end inner class ClearListener
     
     
     class PetListener implements ActionListener
