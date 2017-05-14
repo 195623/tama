@@ -5,11 +5,21 @@
 
 import java.awt.event.*;
 
+import java.awt.*;
+import javax.swing.*;
+
 public class TamaC
 {
     //... The Controller needs to interact with both the Model and View.
     private TamaM m_model;
     private TamaV  m_view;
+    
+    JRadioButton m_menu ;
+    JRadioButton m_actionScreen ;
+    
+    JPanel m_cards;
+    CardLayout m_cardLayout ;
+    
     
     //========================================================== constructor
     /** Constructor */
@@ -18,10 +28,20 @@ public class TamaC
         m_model = model;
         m_view  = view;
         
+        m_menu = m_view.returnMenu();
+        m_actionScreen = m_view.returnActionScreen(); 
+        
+        
+        m_cards = m_view.returnCards();
+        m_cardLayout = m_view.returnCardLayout();
+        
         //... Add listeners to the view.
         view.addMultiplyListener(new MultiplyListener());
-        //view.addClearListener(new ClearListener());
+        
         view.addPetListener( new PetListener() );
+        view.addRadioListener(new RadioListener());
+        
+        
 
       
     }
@@ -38,24 +58,26 @@ public class TamaC
      * If there was an error, tell the View to display it.
      */
     
-    class MultiplyListener implements ActionListener
+    
+    
+    class RadioListener implements ActionListener
     {
-        public void actionPerformed(ActionEvent e)
+    	public void actionPerformed(ActionEvent e)
         {
-            String userInput = "";
-            try
+    		if (m_menu.isSelected())
             {
-                //userInput = m_view.getUserInput();
-                //m_model.multiplyBy(userInput);
-                //m_view.setTotal(m_model.getValue());
-                
+            	m_cardLayout.show(m_cards, "menu");
+            	
+            	System.out.println("1st choice");
             }
-            catch (NumberFormatException nfex)
+            else
             {
-                m_view.showError("Bad input: '" + userInput + "'");
+            	m_cardLayout.show(m_cards, "action screen");
+            	System.out.println("2nd choice");
             }
         }
-    }//end inner class MultiplyListener
+    	
+    }
     
     
     class PetListener implements ActionListener
@@ -80,4 +102,52 @@ public class TamaC
             }
         }    
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    class MultiplyListener implements ActionListener
+    {
+        public void actionPerformed(ActionEvent e)
+        {
+            String userInput = "";
+            try
+            {
+                //userInput = m_view.getUserInput();
+                //m_model.multiplyBy(userInput);
+                //m_view.setTotal(m_model.getValue());
+                
+            }
+            catch (NumberFormatException nfex)
+            {
+                m_view.showError("Bad input: '" + userInput + "'");
+            }
+        }
+    }//end inner class MultiplyListener
 }

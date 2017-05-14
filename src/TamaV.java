@@ -67,7 +67,7 @@ class TamaV extends JFrame
         m_model = model;        
 
         
-        //showWindow(); < --------------------<---------------------<-------- UNCOMMENT THIS and COMMENT NEXT
+        //showWindow(); //< --------------------<---------------------<-------- UNCOMMENT THIS and COMMENT NEXT
         showEx();
         
     }
@@ -96,61 +96,59 @@ class TamaV extends JFrame
     	    	
     }
     
-    
-    void showSubWindow()
+    JPanel returnWindow()
     {
-    	this.getContentPane().removeAll();
-    	this.add(new JLabel("This is a subwindow."));
-    	this.setTitle("Tamagotchi_MVC");
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    	JPanel jpan = new JPanel(new GridLayout(5, 2));
+    	
+    	jpan.add(feedButton);
+    	jpan.add(waterButton);
+    	jpan.add(walkButton);
+    	jpan.add(playButton);
+        
+    	jpan.add(new JLabel(m_model.returnPet().returnNeeds()));
+    	
+    	return jpan ;
     }
+    
+    
+    
+    
+    CardLayout cardLayout = new CardLayout();
+    
+    JPanel gui = new JPanel(new BorderLayout(5,5));
+    JPanel cards = new JPanel(cardLayout);
+    
+    JRadioButton actionScreen = new JRadioButton("Action Screen",false);
+    JRadioButton menu = new JRadioButton("Main Menu", true);   
     
     void showEx()
     {
-    	final JRadioButton game = new JRadioButton("Game", true);
-        JRadioButton highScores = new JRadioButton("High Scores");
+    	
 
         ButtonGroup buttonGroup = new ButtonGroup();
-        buttonGroup.add( game );
-        buttonGroup.add( highScores );
+        buttonGroup.add( menu );
+        buttonGroup.add( actionScreen );
 
         JPanel buttons = new JPanel(new GridLayout(1, 1));
-        buttons.add( game );
-        buttons.add( highScores );
-
-        JPanel gui = new JPanel(new BorderLayout(5,5));
-        gui.add(buttons, BorderLayout.SOUTH);
-
-        final CardLayout cardLayout = new CardLayout();
-        final JPanel cards = new JPanel(cardLayout);
-        gui.add(cards);
-        cards.add(new JLabel("Level 1"), "game");
+        buttons.add( menu );
+        buttons.add( actionScreen );
         
-        JPanel jpan = new JPanel(new GridLayout(5, 1));
-        jpan.add(new JLabel("High Scores"));
-        jpan.add(new JLabel("1. JKB"));
-        jpan.add(new JLabel("2. ASS"));
-        jpan.add(new JLabel("3. POO"));
-        cards.add(jpan, "scores");
+        // --------------------------------
+        
+        JPanel jpan2 = returnWindow();
 
-        ActionListener al = new ActionListener()
-        {
-            public void actionPerformed(ActionEvent ae)
-            {
-                if (game.isSelected())
-                {
-                	cardLayout.show(cards, "game");
-                }
-                else
-                {
-                	cardLayout.show(cards, "scores");
-                }
-            }
-        };
-        game.addActionListener(al);
-        highScores.addActionListener(al);
-
-        JOptionPane.showMessageDialog(null, gui);
+        gui.add(buttons, BorderLayout.SOUTH);       
+        cards.add(jpan2, "menu");        
+        
+        cards.add(new JLabel("[action screen's content]"), "action screen");
+        
+        gui.add(cards);
+        this.setContentPane(gui);
+        this.pack();
+        this.setVisible(true);
+        
+        
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
     
     
@@ -163,12 +161,15 @@ class TamaV extends JFrame
     }
     
     
-    void addMultiplyListener(ActionListener mal)
-    {
-        m_multiplyBtn.addActionListener(mal);
-    }
+    
         
     // ------------
+    
+    void addRadioListener(ActionListener ral)
+    {
+    	menu.addActionListener(ral);
+        actionScreen.addActionListener(ral);
+    }
     
     void addPetListener(ActionListener fal)
     {
@@ -176,6 +177,45 @@ class TamaV extends JFrame
         waterButton.addActionListener(fal);
         walkButton.addActionListener(fal);
         playButton.addActionListener(fal);
-    } 
+    }
+    
+    
+    JRadioButton returnMenu()
+    {
+    	return menu ;
+    }
+    
+    JRadioButton returnActionScreen()
+    {
+    	return actionScreen ;
+    }
+    
+    JPanel returnCards()
+    {
+    	return cards ;
+    }
+    
+    CardLayout returnCardLayout()
+    {
+    	return cardLayout ;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    void addMultiplyListener(ActionListener mal)
+    {
+        m_multiplyBtn.addActionListener(mal);
+    }
     
 }
