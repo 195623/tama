@@ -10,8 +10,8 @@ public class TamaMVC
     public static void main(String[] args) {
         
         TamaM      model      = new TamaM();
-        TamaV       view       = new TamaV(model);
-        TamaC controller = new TamaC(model, view);
+        TamaV      view       = new TamaV(model);
+        TamaC      controller = new TamaC(model, view);
         
         view.setVisible(true);
     }

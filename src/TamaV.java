@@ -15,23 +15,43 @@ class TamaV extends JFrame
     private static final String INITIAL_VALUE = "1";
     
     //... Components
-    private JTextField m_userInputTf = new JTextField(5);
-    private JTextField m_totalTf     = new JTextField(20);
-    private JButton    m_multiplyBtn = new JButton("Multiply");
-    private JButton    m_clearBtn    = new JButton("Clear");
+    //private JTextField m_userInputTf = new JTextField(5);
+    //private JTextField m_totalTf     = new JTextField(20);
+    //private JButton    m_multiplyBtn = new JButton("Multiply");
+    //private JButton    m_clearBtn    = new JButton("Clear");
     
-    private TamaM m_model;
+    private TamaM m_model = new TamaM();
     
     // ------------------------------------------------------
     
-    private Creature ext_pet ;
+    //private Creature ext_pet ;
     
     private JButton    feedButton    = new JButton("Feed");
     private JButton    waterButton    = new JButton("Water");
     private JButton    walkButton    = new JButton("Walk");
     private JButton    playButton    = new JButton("Play");
     
-    //TextField textField = new TextField("default");
+    private JButton    waitButton    = new JButton("Wait");
+    
+    private JTextField petNeeds = new JTextField("");
+    private JTextField petStatus = new JTextField("");
+    
+    /** Constructor */
+    TamaV(TamaM model)
+    {	   	
+        m_model = model;        // swapped L and R        
+        
+        //showEx(); -------------
+        //showWindow();
+        
+    }
+    
+    public void updatePetNeeds()
+    {
+    	
+    	petNeeds.setText(m_model.returnPet().returnNeeds()) ;
+    	petStatus.setText(m_model.returnPet().returnStatus()) ;
+    }
     
     public JButton returnFeedButton()
     {
@@ -53,6 +73,11 @@ class TamaV extends JFrame
     	return playButton ;
     }
     
+    public JButton returnWaitButton()
+    {
+    	return waitButton ;
+    }
+    
     
     
     //======================================================= constructor
@@ -60,17 +85,7 @@ class TamaV extends JFrame
     JPanel content = new JPanel();
     JPanel content2 = new JPanel();
     
-    /** Constructor */
-    TamaV(TamaM model)
-    {	
-    	ext_pet = model.returnPet();    	
-        m_model = model;        
-
-        
-        //showWindow(); //< --------------------<---------------------<-------- UNCOMMENT THIS and COMMENT NEXT
-        showEx();
-        
-    }
+    
     
     
     void showWindow()
@@ -84,8 +99,9 @@ class TamaV extends JFrame
     	this.add(waterButton);
     	this.add(walkButton);
     	this.add(playButton);
+    	this.add(waitButton);
         
-    	this.add(new JLabel(m_model.returnPet().returnNeeds()));
+    	this.add(new JLabel(m_model.returnPet().returnNeeds())); // -----------------
     	this.pack();
     	this.setVisible(true);
     	
@@ -104,8 +120,13 @@ class TamaV extends JFrame
     	jpan.add(waterButton);
     	jpan.add(walkButton);
     	jpan.add(playButton);
+    	jpan.add(waitButton);
         
-    	jpan.add(new JLabel(m_model.returnPet().returnNeeds()));
+    	updatePetNeeds();
+    	jpan.add(new JLabel());
+    	jpan.add(petNeeds);
+    	jpan.add(petStatus);
+    	//jpan.add(new JLabel(m_model.returnPet().returnNeeds()));
     	
     	return jpan ;
     }
@@ -121,7 +142,7 @@ class TamaV extends JFrame
     JRadioButton actionScreen = new JRadioButton("Action Screen",false);
     JRadioButton menu = new JRadioButton("Main Menu", true);   
     
-    void showEx()
+    public void showEx()
     {
     	
 
@@ -177,6 +198,7 @@ class TamaV extends JFrame
         waterButton.addActionListener(fal);
         walkButton.addActionListener(fal);
         playButton.addActionListener(fal);
+        waitButton.addActionListener(fal);
     }
     
     
@@ -213,9 +235,9 @@ class TamaV extends JFrame
     
     
     
-    void addMultiplyListener(ActionListener mal)
+    /*void addMultiplyListener(ActionListener mal)
     {
         m_multiplyBtn.addActionListener(mal);
-    }
+    }*/
     
 }

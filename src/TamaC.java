@@ -11,8 +11,8 @@ import javax.swing.*;
 public class TamaC
 {
     //... The Controller needs to interact with both the Model and View.
-    private TamaM m_model;
-    private TamaV  m_view;
+    private TamaM m_model ;//= new TamaM();
+    private TamaV m_view  ;//= new TamaV(m_model);// = new TamaV(m_model);
     
     JRadioButton m_menu ;
     JRadioButton m_actionScreen ;
@@ -25,8 +25,19 @@ public class TamaC
     /** Constructor */
     TamaC(TamaM model, TamaV view)
     {
-        m_model = model;
+        m_model = model ; // swapped L and R
         m_view  = view;
+        
+        m_model.returnPet().dayPasses();
+        m_model.returnPet().dayPasses();
+        m_model.returnPet().dayPasses();
+        
+        m_view.showEx();
+        
+        //System.out.println(model.returnPet().returnNeeds());
+        
+        
+        
         
         m_menu = m_view.returnMenu();
         m_actionScreen = m_view.returnActionScreen(); 
@@ -36,10 +47,10 @@ public class TamaC
         m_cardLayout = m_view.returnCardLayout();
         
         //... Add listeners to the view.
-        view.addMultiplyListener(new MultiplyListener());
+        //m_view.addMultiplyListener(new MultiplyListener());
         
-        view.addPetListener( new PetListener() );
-        view.addRadioListener(new RadioListener());
+        m_view.addPetListener( new PetListener() );
+        m_view.addRadioListener(new RadioListener());
         
         
 
@@ -84,6 +95,11 @@ public class TamaC
     {
         public void actionPerformed(ActionEvent e)
         {
+        	//m_view.showEx();
+        	
+        	m_view.updatePetNeeds();
+        	
+        	
             if( e.getSource() == m_view.returnFeedButton() )
             {
             	System.out.println("Pet got fed.");
@@ -100,6 +116,13 @@ public class TamaC
             {
             	System.out.println("Pet got played with.");
             }
+            else if( e.getSource() == m_view.returnWaitButton() )
+            {
+            	System.out.println("Waited a day.");
+            	m_model.returnPet().dayPasses();            	
+            	
+            }
+            else System.out.println("action performed");
         }    
     }
     
