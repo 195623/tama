@@ -14,44 +14,87 @@ class TamaV extends JFrame
     //... Constants
     private static final String INITIAL_VALUE = "1";
     
-    //... Components
-    //private JTextField m_userInputTf = new JTextField(5);
-    //private JTextField m_totalTf     = new JTextField(20);
-    //private JButton    m_multiplyBtn = new JButton("Multiply");
-    //private JButton    m_clearBtn    = new JButton("Clear");
-    
     private TamaM m_model = new TamaM();
     
     // ------------------------------------------------------
     
     //private Creature ext_pet ;
     
-    private JButton    feedButton    = new JButton("Feed");
-    private JButton    waterButton    = new JButton("Water");
-    private JButton    walkButton    = new JButton("Walk");
-    private JButton    playButton    = new JButton("Play");
+    private JButton		previousPetButton = new JButton ("previous") ;
+    private JButton		nextPetButton     = new JButton ("next") ;
+    
+    private JButton		feedButton    = new JButton("Feed");
+    private JButton		waterButton   = new JButton("Water");
+    private JButton		walkButton    = new JButton("Walk");
+    private JButton		playButton    = new JButton("Play");
     
     private JButton    waitButton    = new JButton("Wait");
     
     private JTextField petNeeds = new JTextField("");
     private JTextField petStatus = new JTextField("");
     
+    private JTextField currentPetTextIndex = new JTextField("0");
+    private JTextField currentPetName = new JTextField("");
+    
     /** Constructor */
     TamaV(TamaM model)
     {	   	
-        m_model = model;        // swapped L and R        
+        m_model = model;
+        currentPetName.setText(m_model.returnPets().get(0).returnName()+"                ");
         
-        //showEx(); -------------
+        showEx();
         //showWindow();
         
     }
     
+  //======================================================= constructor
+    
     public void updatePetNeeds()
     {
+    	int currentPetIndex = Integer.parseInt(currentPetTextIndex.getText());
     	
-    	petNeeds.setText(m_model.returnPet().returnNeeds()) ;
-    	petStatus.setText(m_model.returnPet().returnStatus()) ;
+    	
+    	petNeeds.setText(m_model.returnPets().get(currentPetIndex).returnNeeds()) ;
+    	petStatus.setText(m_model.returnPets().get(currentPetIndex).returnStatus()) ;
     }
+    
+    public int returnSelectedPet()
+    {
+    	int currentPetIndex = Integer.parseInt(currentPetTextIndex.getText());
+    	
+    	return currentPetIndex ;
+    }
+    
+    public void changePetIndex(int i)
+    {
+    	int currentPetIndex = Integer.parseInt(currentPetTextIndex.getText());
+    	currentPetIndex += i ;
+    	
+    	int n = m_model.returnPets().size() ;
+    	
+    	if(currentPetIndex<0) currentPetIndex  = n-1 ;
+    	if(currentPetIndex>=n) currentPetIndex = 0 ;
+    	
+    	
+    	currentPetTextIndex.setText(Integer.toString(currentPetIndex));
+    	// update pet displayed name
+    	currentPetName.setText(m_model.returnPets().get(currentPetIndex).returnName());
+    	
+    }
+    
+    // ------------------------------------------------
+    
+    public JButton returnNextPetButton()
+    {
+    	return nextPetButton ;
+    }
+    
+    public JButton returnPreviousPetButton()
+    {
+    	return previousPetButton ;
+    }
+    
+    // --------
     
     public JButton returnFeedButton()
     {
@@ -73,19 +116,14 @@ class TamaV extends JFrame
     	return playButton ;
     }
     
+    
     public JButton returnWaitButton()
     {
     	return waitButton ;
     }
     
     
-    
-    //======================================================= constructor
-    
-    JPanel content = new JPanel();
-    JPanel content2 = new JPanel();
-    
-    
+    // --------------------------------    
     
     
     void showWindow()
@@ -101,18 +139,20 @@ class TamaV extends JFrame
     	this.add(playButton);
     	this.add(waitButton);
         
-    	this.add(new JLabel(m_model.returnPet().returnNeeds())); // -----------------
+    	this.add(new JLabel(m_model.returnPet().returnNeeds()));
     	this.pack();
     	this.setVisible(true);
     	
     	this.setTitle("Tamagotchi_MVC");
-        // The window closing event should probably be passed to the 
-        // Controller in a real program, but this is a short example.
+
+    	// The window closing event should be passed to the Controller
+    	
+    	
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     	    	
     }
     
-    JPanel returnWindow()
+    JPanel returnPetActionsWindow()
     {
     	JPanel jpan = new JPanel(new GridLayout(5, 2));
     	
@@ -126,7 +166,6 @@ class TamaV extends JFrame
     	jpan.add(new JLabel());
     	jpan.add(petNeeds);
     	jpan.add(petStatus);
-    	//jpan.add(new JLabel(m_model.returnPet().returnNeeds()));
     	
     	return jpan ;
     }
@@ -134,34 +173,70 @@ class TamaV extends JFrame
     
     
     
-    CardLayout cardLayout = new CardLayout();
     
-    JPanel gui = new JPanel(new BorderLayout(5,5));
-    JPanel cards = new JPanel(cardLayout);
     
-    JRadioButton actionScreen = new JRadioButton("Action Screen",false);
-    JRadioButton menu = new JRadioButton("Main Menu", true);   
+    
+    JPanel returnMainMenuWindow()
+    {
+    	JPanel jpan = new JPanel(new FlowLayout()); //            change layout 
+    	
+    	// elements
+    	jpan.add(previousPetButton);
+    	jpan.add(new JLabel("Pet #"));
+    	jpan.add(currentPetTextIndex);
+    	jpan.add(new JLabel(": "));
+    	jpan.add(currentPetName);
+    	jpan.add(nextPetButton);
+
+    	//jpan.add(new JButton());
+    	
+    	return jpan ;
+    }
+    
+    
+    
+    
+			    CardLayout cardLayout = new CardLayout();
+			    
+			    JPanel gui = new JPanel(new BorderLayout(5,5));
+			    JPanel cards = new JPanel(cardLayout);
+			    
+			    
+			    JRadioButton mainMenuRadioButton = new JRadioButton("Main Menu",true);
+			    JRadioButton petActionsRadioButton = new JRadioButton("Pet Actions", false);
+			    
+			    
     
     public void showEx()
     {
     	
 
         ButtonGroup buttonGroup = new ButtonGroup();
-        buttonGroup.add( menu );
-        buttonGroup.add( actionScreen );
+        buttonGroup.add( mainMenuRadioButton );
+        buttonGroup.add( petActionsRadioButton );
+        
 
         JPanel buttons = new JPanel(new GridLayout(1, 1));
-        buttons.add( menu );
-        buttons.add( actionScreen );
+        buttons.add( mainMenuRadioButton );
+        buttons.add( petActionsRadioButton );
+        
+        // -----------------------------------------------------------
+        
+        JPanel jpan = returnMainMenuWindow();
+        
+        cards.add(jpan, "Main Menu");
         
         // --------------------------------
         
-        JPanel jpan2 = returnWindow();
+        JPanel jpan2 = returnPetActionsWindow();
+        cards.add(jpan2, "Pet Actions");
 
         gui.add(buttons, BorderLayout.SOUTH);       
-        cards.add(jpan2, "menu");        
         
-        cards.add(new JLabel("[action screen's content]"), "action screen");
+        
+        
+        
+        // ------------------------------------------------------------
         
         gui.add(cards);
         this.setContentPane(gui);
@@ -186,10 +261,16 @@ class TamaV extends JFrame
         
     // ------------
     
+    void addMainMenuListener(ActionListener mal)
+    {
+    	nextPetButton.addActionListener(mal);
+    	previousPetButton.addActionListener(mal);
+    }
+    
     void addRadioListener(ActionListener ral)
     {
-    	menu.addActionListener(ral);
-        actionScreen.addActionListener(ral);
+    	petActionsRadioButton.addActionListener(ral);
+    	mainMenuRadioButton.addActionListener(ral);
     }
     
     void addPetListener(ActionListener fal)
@@ -200,16 +281,15 @@ class TamaV extends JFrame
         playButton.addActionListener(fal);
         waitButton.addActionListener(fal);
     }
-    
-    
-    JRadioButton returnMenu()
+        
+    public JRadioButton returnMainMenuRadioButton()
     {
-    	return menu ;
+    	return mainMenuRadioButton ;
     }
     
-    JRadioButton returnActionScreen()
+    public JRadioButton returnPetActionsRadioButton()
     {
-    	return actionScreen ;
+    	return petActionsRadioButton ;
     }
     
     JPanel returnCards()
